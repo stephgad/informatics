@@ -3,6 +3,8 @@ title: "HW1_ClimateData_Gad"
 author: "Stephanie Gad"
 date: '`r format (Sys.time(), "%Y-%m-%d")`'
 output: html_document
+  # pdf_document: default
+  # slidy_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -89,10 +91,14 @@ According to the National Park Service website, Yosemite receives over 70 percen
 
 
 ```{r}
+# 
 # winter_precip <- climate2[climate2$seasons==4,3]
 # summer_temp <- climate2[climate2$seasons==2,2]
+# 
+# climate3 <- data.frame(winter_precip,summer_temp)
+# View(climate3)
 # library(ggplot2)
-# ggplot(climate2, aes(x=climate2[climate2$seasons==4,3], y=climate2[climate2$seasons==2,2]))
+# ggplot(climate3, aes(x=climate3$winter_precip, y=climate3$summer_temp))
 
 ```
 
