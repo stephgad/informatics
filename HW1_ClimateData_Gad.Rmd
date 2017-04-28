@@ -1,0 +1,112 @@
+---
+title: "HW1_ClimateData_Gad"
+author: "Stephanie Gad"
+date: '`r format (Sys.time(), "%Y-%m-%d")`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval=TRUE)
+```
+
+#Precipitation and Average Temperature Graphed by Month
+```{r climate, eval=TRUE, echo=FALSE}
+
+climate = read.table("clim.txt", header=T)
+climate2 = climate[,-c(1)] 
+# View(climate2)
+
+library(ggplot2)
+ggplot(climate2, aes(x=as.factor(month), y=rain)) + 
+  geom_boxplot(color= "blue") +
+  labs(x = "Months") +
+  labs(y = "Precipitation")
+
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(climate2, aes(x=as.factor(month), y=tmax)) + 
+  geom_boxplot(color= "green") +
+  labs(x = "Months") +
+  labs(y = "Average Temperature")
+
+
+```
+
+#Trends in Precipitation 
+
+```{r, wet_dry_years}
+
+rain_year_group <- aggregate(climate2[, 3], list(climate2$year), sum)
+# View(rain_year_group)
+ascending_rain <- rain_year_group[order(rain_year_group$x),] 
+# View(ascending_rain)
+
+# rain_year <- climate2 %>% 
+#   group_by(year) %>% 
+#   summarize(rain=sum(rain))
+# View(rain_year)
+```
+The wettest year in the climate dataset is 1982 with a value of 2135.4
+
+The driest year in the climate dataset is 2013 with a value of 263.4
+
+```{r, wettest and driest season}
+climate2["seasons"] <- NA
+# View(climate2)
+#spring(Mar, Apr, May) = 1
+#Summer(Jun, Jul, Aug) = 2
+#Fall(Sept, Oct, Nov) = 3
+#Winter(Dec, Jan, Feb) = 4
+
+climate2$seasons = ifelse(climate2$month <2,4, ifelse (climate2$month <3,4, ifelse(climate2$month <4,1, ifelse(climate2$month <5,1, ifelse(climate2$month <6,1, ifelse(climate2$month <7,2, ifelse(climate2$month <8,2, ifelse(climate2$month <9,2, ifelse(climate2$month <10,3, ifelse(climate2$month <11,3, ifelse(climate2$month <12,3, ifelse(climate2$month <13,4,8))))))))))))
+
+rain_season_group <- aggregate(climate2[, 3], list(climate2$seasons), sum)
+
+ascending_rain_season <- rain_season_group[order(rain_season_group$x),] 
+# View(ascending_rain_season)
+```
+
+The wettest season in the climate dataset is winter with a value of 39099.7
+
+The driest season in the climate dataset is summer with a value of 1317.8
+
+#A Wet Year in Yosemite
+
+According to the National Park Service website, Yosemite receives less than five percent of its annual precipitation in summer.
+
+<div align="center">
+<img src="/Users/stephaniegad/Desktop/yosemite_summer.jpg" height=400> </div>
+
+#A Dry Year in Yosemite
+
+According to the National Park Service website, Yosemite receives over 70 percent of the year’s precipitation between November and March. 
+
+<div align="center">
+<img src="/Users/stephaniegad/Desktop/yosemite_winter.jpg" height=400> </div>
+
+
+```{r}
+# winter_precip <- climate2[climate2$seasons==4,3]
+# summer_temp <- climate2[climate2$seasons==2,2]
+# library(ggplot2)
+# ggplot(climate2, aes(x=climate2[climate2$seasons==4,3], y=climate2[climate2$seasons==2,2]))
+
+```
+
+
+
+
+
+References
+`
+Dry Yosemite: https://www.nationalparkstraveler.com/2016/11/snow-and-solitude-amidst-yosemites-winter-splendor
+`
+`
+Wet Yosemite: http://www.sfgate.com/outdoors/article/As-summer-rush-eases-Yosemite-tries-out-new-9203199.php
+`
+`
+National Park Service: https://www.nps.gov/yose/planyourvisit/seasons.htm
+`
