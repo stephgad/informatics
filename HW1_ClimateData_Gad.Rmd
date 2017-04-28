@@ -2,9 +2,8 @@
 title: "HW1_ClimateData_Gad"
 author: "Stephanie Gad"
 date: '`r format (Sys.time(), "%Y-%m-%d")`'
-output: html_document
-  # pdf_document: default
-  # slidy_presentation: default
+output: pdf_document
+
 ---
 
 ```{r setup, include=FALSE}
@@ -18,8 +17,9 @@ climate = read.table("clim.txt", header=T)
 climate2 = climate[,-c(1)] 
 # View(climate2)
 
+clim.mth <- aggregate(climate2, by=list(climate2$month, climate2$year), sum)
 library(ggplot2)
-ggplot(climate2, aes(x=as.factor(month), y=rain)) + 
+ggplot(clim.mth, aes(x=as.factor(month), y=rain)) + 
   geom_boxplot(color= "blue") +
   labs(x = "Months") +
   labs(y = "Precipitation")
@@ -29,8 +29,9 @@ ggplot(climate2, aes(x=as.factor(month), y=rain)) +
 
 ```{r}
 library(ggplot2)
-ggplot(climate2, aes(x=as.factor(month), y=tmax)) + 
-  geom_boxplot(color= "green") +
+clim.avg <- aggregate(climate2, by=list(climate2$month, climate2$year), mean)
+ggplot(clim.avg, aes(x=as.factor(month), y=tmax)) + 
+  geom_boxplot(color= "purple") +
   labs(x = "Months") +
   labs(y = "Average Temperature")
 
@@ -69,6 +70,7 @@ rain_season_group <- aggregate(climate2[, 3], list(climate2$seasons), sum)
 
 ascending_rain_season <- rain_season_group[order(rain_season_group$x),] 
 # View(ascending_rain_season)
+# View(cliamte2)
 ```
 
 The wettest season in the climate dataset is winter with a value of 39099.7
@@ -80,29 +82,32 @@ The driest season in the climate dataset is summer with a value of 1317.8
 According to the National Park Service website, Yosemite receives less than five percent of its annual precipitation in summer.
 
 <div align="center">
-<img src="/Users/stephaniegad/Desktop/yosemite_summer.jpg" height=400> </div>
+<img src="/Users/stephaniegad/Documents/Bren/ESM262/informatics/yosemite_summer.jpg" height=400> </div>
 
 #A Dry Year in Yosemite
 
 According to the National Park Service website, Yosemite receives over 70 percent of the year’s precipitation between November and March. 
 
 <div align="center">
-<img src="/Users/stephaniegad/Desktop/yosemite_winter.jpg" height=400> </div>
+<img src="/Users/stephaniegad/Documents/Bren/ESM262/informatics/yosemite_winter.jpg" height=400> </div>
 
-
+#Relationship Between Winter Precipitation and Summer Temperature
 ```{r}
-# 
-# winter_precip <- climate2[climate2$seasons==4,3]
-# summer_temp <- climate2[climate2$seasons==2,2]
-# 
-# climate3 <- data.frame(winter_precip,summer_temp)
-# View(climate3)
-# library(ggplot2)
-# ggplot(climate3, aes(x=climate3$winter_precip, y=climate3$summer_temp))
+winter_precip <- climate2[climate2$seasons==4,]
+# View(winter_precip)
+winter_precip_agg <- aggregate(winter_precip, list(winter_precip$year), sum)
+# View(winter_precip_agg)
+
+summer_temp <- climate2[climate2$seasons==2,]
+summer_temp_agg <- aggregate(summer_temp, list(summer_temp$year), sum)
+# View(summer_temp_agg)
+
+plot(winter_precip_agg$rain ~ summer_temp_agg$tmax, xlab = "Summer Temperature", ylab = "Winter Precipitation")
+abline(lm(winter_precip_agg$rain ~ summer_temp_agg$tmax), col="red")
 
 ```
 
-
+*There seems to be little to no relationship between summer temperature and winter precipitaiton. The regression line maybe shows a slight trend that as summer temperture increases winter precipitaion decreases, but overall there is no distinguishabe trend.  
 
 
 
