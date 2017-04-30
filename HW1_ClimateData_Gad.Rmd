@@ -84,12 +84,14 @@ According to the National Park Service website, Yosemite receives less than five
 <div align="center">
 <img src="/Users/stephaniegad/Documents/Bren/ESM262/informatics/yosemite_summer.jpg" height=400> </div>
 
+![](/Users/stephaniegad/Documents/Bren/ESM262/informatics/yosemite_summer.jpg)
 #A Dry Year in Yosemite
 
 According to the National Park Service website, Yosemite receives over 70 percent of the year’s precipitation between November and March. 
 
 <div align="center">
 <img src="/Users/stephaniegad/Documents/Bren/ESM262/informatics/yosemite_winter.jpg" height=400> </div>
+![](/Users/stephaniegad/Documents/Bren/ESM262/informatics/yosemite_winter.jpg)
 
 #Relationship Between Winter Precipitation and Summer Temperature
 ```{r}
@@ -99,7 +101,7 @@ winter_precip_agg <- aggregate(winter_precip, list(winter_precip$year), sum)
 # View(winter_precip_agg)
 
 summer_temp <- climate2[climate2$seasons==2,]
-summer_temp_agg <- aggregate(summer_temp, list(summer_temp$year), sum)
+summer_temp_agg <- aggregate(summer_temp, list(summer_temp$year), mean)
 # View(summer_temp_agg)
 
 plot(winter_precip_agg$rain ~ summer_temp_agg$tmax, xlab = "Summer Temperature", ylab = "Winter Precipitation")
