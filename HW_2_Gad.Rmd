@@ -94,15 +94,17 @@ feature_tib <- gaz %>% group_by(feature_class) %>% summarise() %>% select(featur
 
 gaz_join <- feature_tib %>% left_join(gaz, by = "feature_class") 
 
-##Can not get this line of code to run. Everytime I try R freezes. Since I can't get it to run I'll continue with what I think the code might be since I can't run to check.
 
-gaz_join %>%
-  group_by(county_name) %>%
-  county_natural <- count(Type = "natural") %>%
-  county_manmade <- count(Type = "man-made") %>%
-  mutate(county_nat_fraction = (county_manmade/(county_manmade + county_natural)))
-  mutate(county_man_fraction = (county_natural/(county_manmade + county_natural)))
-#wasn't able to run this last bit - 
+counts <- count(gaz_join, var = Type, by = county_name)
+sep_type <- spread(counts, key = "var", value = "n")
+ 
+manmade = sep_type$`man-made`
+natural = sep_type$natural
+total = manmade+natural
+
+county_frac <-mutate(sep_type, fraction_manmade = (manmade/total), fraction_natural = (natural/total))
+
+print(county_frac)
   
 
 ```
