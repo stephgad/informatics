@@ -86,10 +86,21 @@ county_center_point <- print(subset(min_max_table, select = c(1,6,7)))
 ##What are the fractions of the total number of features in each county that are natural? manmande? 
 
 ```{r}
-feature_class <- select(gaz,feature_class) %>%
+feature_tib <- select(gaz,feature_class) %>%
   mutate( Type = ifelse(feature_class %in% c("Canal","Bridge","Building","Canal","Cemetery","Census","Church","Civil","Crossing","Dam","Harbor","Hospital","Levee","Locale","Military","Oilfield","Populated Place","Post","Office","Reserve","Reservoir","School","Tower","Trail","Tunnel","Well"), "man-made","natural"))
  
 #manmade variables: Airport,Bridge,Building, Canal,Bridge,Building,Canal,Cemetery,Census,Church,Civil,Crossing,Dam,Harbor,Hospital,Levee,Locale,Military,Oilfield,Populated Place,Post Office,Reserve,Reservoir,School,Tower,Trail,Tunnel,Well
+
+gaz_join <- feature_tib %>% left_join(gaz, by = "feature_class") 
+
+##Can not get this line of code to run. Everytime I try R freezes. Since I can't get it to run I'll continue with what I think the code might be since I can't run to check.
+
+gaz_join %>%
+  group_by(county_name) %>%
+  county_natural <- count(Type = "natural") %>%
+  county_manmade <- count(Type = "man-made") %>%
+  mutate(county_nat_fraction = (county_manmade/(county_manmade + county_natural)))
+  mutate(county_man_fraction = (county_natural/(county_manmade + county_natural)))
 
 ```
 
