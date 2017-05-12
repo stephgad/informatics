@@ -1,0 +1,95 @@
+---
+title: "HW_2_Data_Ingest_Gad"
+author: "Steph Gad"
+date: '`r format (Sys.time(), "%Y-%m-%d")`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE)
+```
+
+```{r}
+
+library(tidyverse)
+library(dplyr)
+
+CA <- read_delim("CA_Features_20170401.txt", delim = "|")
+
+gaz_raw <- as_tibble(CA)
+#View(gaz_raw)
+
+gaz <- tibble( 
+  "feature_ID" = gaz_raw[[1]],
+ "feature_name" = gaz_raw$FEATURE_NAME, 
+ "feature_class" = gaz_raw$FEATURE_CLASS,
+ "state_alpha" = gaz_raw$STATE_ALPHA,
+ "county_name" = gaz_raw$COUNTY_NAME,
+ "primary_latitude" = gaz_raw$PRIM_LAT_DEC,
+ "primary_longitude" = gaz_raw$PRIM_LONG_DEC,
+ "source_latitude" = gaz_raw$SOURCE_LAT_DEC,
+ "source_longitude" = gaz_raw$SOURCE_LONG_DEC,
+ "elevation_meters" = gaz_raw$ELEV_IN_M,
+ "map_name" = gaz_raw$MAP_NAME,
+ "date_created" = gaz_raw$DATE_CREATED,
+ "date_edited" = gaz_raw$DATE_EDITED
+  )
+
+#before changing data type feature_ID = int, feature_name = chr, feature_class = chr, state_alpha = chr, county_name = char, primary_latitude_dms = chr, primary_longitude_dma = chr, source_latitude_dms = chr, sources_longitiude_dms = chr, elevation_meters = int, map_name = chr, date_created = chr, date_edited = chr
+
+#all types are correct excepte for date_created and date_edited which need to be changed from chr to date
+gaz %>%
+  mutate(date_created = as.Date(date_created, format = '%m/%d/%Y'), date_edited = as.Date(date_edited, format = '%m/%d/%y'))
+ 
+#Change all "Unknown" values to NA
+gaz$map_name <- parse_character(gaz$map_name, na="Unknown")
+gaz$primary_latitude <- parse_character(gaz$primary_latitude, na="0")
+gaz$primary_longitude <- parse_character(gaz$primary_longitude, na="0")
+
+#delte from gaz rows where primary lattiude or longitude are unknown
+gaz <- gaz %>%
+  filter(primary_latitude != "NA") %>%
+  filter(state_alpha == "CA")
+#View(gaz)
+
+write_delim(gaz, "gaz.csv", delim = "|")
+```
+
+
+##What is the most-frequently-occuring feature names? 
+```{r}
+gaz %>%
+  count(feature_name, sort = TRUE)
+```
+###Church of Christ occurs 228 times
+
+##What is the least-frequently-occuring feature names? 
+```{r}
+gaz %>%
+  count(feature_class, sort = TRUE)
+```
+###Isthmus and Sea both occur only once 
+
+##What is the approximate center point of each county? 
+```{r}
+
+min_max_table <- gaz %>%
+  group_by(county_name) %>%
+  summarise(min_lat = min(primary_latitude, na.rm = TRUE), max_lat = max(primary_latitude, na.rm = TRUE), min_long = min(primary_longitude, na.rm = TRUE), max_long = max(primary_longitude, na.rm = TRUE)) %>%
+  mutate(min_long = as.double(min_long), max_long = as.double(max_long), min_lat = as.double(min_lat), max_lat = as.double(max_lat)) %>%
+  mutate(xcen = (min_long + max_long)/2) %>%
+  mutate(ycen = (min_lat + max_lat)/2) 
+
+county_center_point <- print(subset(min_max_table, select = c(1,6,7))) 
+
+```
+##What are the fractions of the total number of features in each county that are natural? manmande? 
+
+```{r}
+feature_class <- select(gaz,feature_class) %>%
+  mutate( Type = ifelse(feature_class %in% c("Canal","Bridge","Building","Canal","Cemetery","Census","Church","Civil","Crossing","Dam","Harbor","Hospital","Levee","Locale","Military","Oilfield","Populated Place","Post","Office","Reserve","Reservoir","School","Tower","Trail","Tunnel","Well"), "man-made","natural"))
+ 
+#manmade variables: Airport,Bridge,Building, Canal,Bridge,Building,Canal,Cemetery,Census,Church,Civil,Crossing,Dam,Harbor,Hospital,Levee,Locale,Military,Oilfield,Populated Place,Post Office,Reserve,Reservoir,School,Tower,Trail,Tunnel,Well
+
+```
+
