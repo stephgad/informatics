@@ -101,6 +101,7 @@ gaz_join %>%
   county_manmade <- count(Type = "man-made") %>%
   mutate(county_nat_fraction = (county_manmade/(county_manmade + county_natural)))
   mutate(county_man_fraction = (county_natural/(county_manmade + county_natural)))
+  
 
 ```
 
