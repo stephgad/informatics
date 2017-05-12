@@ -86,7 +86,8 @@ county_center_point <- print(subset(min_max_table, select = c(1,6,7)))
 ##What are the fractions of the total number of features in each county that are natural? manmande? 
 
 ```{r}
-feature_tib <- select(gaz,feature_class) %>%
+
+feature_tib <- gaz %>% group_by(feature_class) %>% summarise() %>% select(feature_class) %>%
   mutate( Type = ifelse(feature_class %in% c("Canal","Bridge","Building","Canal","Cemetery","Census","Church","Civil","Crossing","Dam","Harbor","Hospital","Levee","Locale","Military","Oilfield","Populated Place","Post","Office","Reserve","Reservoir","School","Tower","Trail","Tunnel","Well"), "man-made","natural"))
  
 #manmade variables: Airport,Bridge,Building, Canal,Bridge,Building,Canal,Cemetery,Census,Church,Civil,Crossing,Dam,Harbor,Hospital,Levee,Locale,Military,Oilfield,Populated Place,Post Office,Reserve,Reservoir,School,Tower,Trail,Tunnel,Well
