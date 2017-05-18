@@ -104,9 +104,8 @@ p4
 levels = c("None","Low","Med","High") 
 
 p6 = ggplot(thinshallow, aes(x=month, y=trans, col=as.factor(thin)))+
-  scale_fill_discrete(name ="Thin Intensity", labels=levels)+ #Could not figure out how to change legend and labels
   stat_summary(fun.y="mean",geom="line", aes(col=as.factor(thin)))+
-  labs(x="Months", y="Transpiration")+
+  labs(x="Months", y="Transpiration", col = "Thin Intensity", labels = levels)+
   scale_x_discrete(limits=c(1,2,3,4,5,6,7,8,9,10,11,12))+
   facet_wrap(~as.factor(scen))
    
