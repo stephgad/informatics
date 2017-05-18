@@ -46,6 +46,11 @@ grid.arrange(p1,p2)
 
 ```
 
+####Fig 1. Comparison of deep and shallow thinning on plant biomass 
+  
+<br>
+<br>
+
 ```{r}
 
 months <- list(
@@ -75,6 +80,10 @@ p3= ggplot(clim) +
 p3
 ```
 
+#### Fig 2. Comparison of average temperatures per month from 1941-2013
+
+<br>
+<br>
 
 ```{r}
 p4 = ggplot(clim) + 
@@ -86,15 +95,25 @@ p4
 
 ```
 
+####Fig 3. Annual rainfall from 1941 - 2013
+
+<br>
+<br>
 
 ```{r}
-lnms = c("None","Low","Med","High")
+levels = c("None","Low","Med","High") 
+
 p6 = ggplot(thinshallow, aes(x=month, y=trans, col=as.factor(thin)))+
-  scale_fill_brewer(type="seq", palette="Blues", name="Thin Intensity", labels=levels) +
   stat_summary(fun.y="mean",geom="line", aes(col=as.factor(thin)))+
   labs(x="Months", y="Transpiration")+
-  facet_wrap(~as.factor(scen))
+  scale_x_discrete(limits=c(1,2,3,4,5,6,7,8,9,10,11,12))+
+  facet_wrap(~as.factor(scen))+
+  scale_fill_discrete(name ="Thin Intensity", labels=levels) 
 p6
+
 
 ```
 
+####Fig 4. Average monthly transpiration by decade as result of shallow thinning
+
+<br>
