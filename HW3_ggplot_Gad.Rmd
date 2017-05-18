@@ -1,0 +1,100 @@
+---
+title: "HW3 ggplot Gad"
+author: "Steph Gad"
+date: '`r format (Sys.time(), "%Y-%m-%d")`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval=TRUE, warning=FALSE, comment=FALSE)
+```
+
+```{r }
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(gridExtra)
+library(lubridate)
+
+#read in data
+thinshallow = read.table("esm262/docs/wk04_ggplot/data/resthin.shallow.txt", header = T)
+thindeep = read.table("esm262/docs/wk04_ggplot/data/resthin.deep.txt", header = T)
+clim = read.table("esm262/docs/wk04_ggplot/data/sierraclim.txt", header = T)
+```
+
+```{r }
+levels = c("None","Low","Med","High")
+
+scl = 9/2
+
+p1=ggplot(thindeep, aes(x=as.factor(wy), y=plantc, fill=as.factor(thin)))+
+  geom_boxplot()+
+  labs(x="Years Since Deep Thinning", y="Plant Biomass")+
+  ylim(1,10)+
+  theme(axis.text= element_text(face="bold", size=14), 
+               plot.margin = unit(c(25,25,25,5),"pt"), axis.title = element_text(size=14))+ 
+  scale_fill_brewer(type="seq", palette="Purples", name="Thin Intensity", labels=levels) 
+
+p2=ggplot(thinshallow, aes(x=as.factor(wy), y=plantc*scl, fill=as.factor(thin)))+geom_boxplot()+
+  labs(x="Years Since Shallow Thinning", y="Plant Biomass")+
+  ylim(1,10)+
+  theme(axis.text= element_text(face="bold", size=14), 
+               plot.margin = unit(c(25,25,25,5),"pt"), axis.title = element_text(size=14))+ 
+  scale_fill_brewer(type="seq", palette="Purples", name="Thin Intensity", labels=levels)
+
+grid.arrange(p1,p2) 
+
+```
+
+```{r}
+
+months <- list(
+  '1'="January",
+  '2'="February",
+  '3'="March",
+  '4'="April",
+  '5'="May",
+  '6'="June",
+  '7'="July",
+  '8'="August",
+  '9'="September",
+  '10'="October",
+  '11'="November",
+  '12'="December"
+)
+months_labeller <- function(variable,value){
+  return(months[value])
+}
+
+p3= ggplot(clim) + 
+  geom_point(aes(x=year, y=tmax), stat="summary", fun.y="mean", col='violetred2', shape = 8) +
+  ggtitle("Average Maximum Temperature") +
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(x="Year", y= expression(paste("Maximum Temperature ",C**degree)))+
+  facet_wrap(~ month, labeller=months_labeller)
+p3
+```
+
+
+```{r}
+p4 = ggplot(clim) + 
+  geom_line(aes(x=year, y=rain), stat="summary", fun.y="sum", colour='turquoise2', size = 2) +
+  ggtitle("Annual Rain")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(x="Year", y="Rainfall (mm/yr)")
+p4
+
+```
+
+
+```{r}
+lnms = c("None","Low","Med","High")
+p6 = ggplot(thinshallow, aes(x=month, y=trans, col=as.factor(thin)))+
+  scale_fill_brewer(type="seq", palette="Blues", name="Thin Intensity", labels=levels) +
+  stat_summary(fun.y="mean",geom="line", aes(col=as.factor(thin)))+
+  labs(x="Months", y="Transpiration")+
+  facet_wrap(~as.factor(scen))
+p6
+
+```
+
