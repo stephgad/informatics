@@ -19,7 +19,7 @@ library(reshape2)
 
 ```
 
-#Generate example data
+##Generate example data by creating a table for price and loaction per species
 ```{r}
 species = as.factor(c("mahimahi", "halibut", "salmon", "cod", "albacore"))
 location = as.factor(c("pacific", "west_pac", "atlantic", "gulf"))
@@ -38,9 +38,15 @@ catch <- as.matrix(catch_tib)
 rownames(catch) = species
 colnames(catch) = location
 
+
+```
+
+##Results from fish function
+```{r}
+
 source("fish_function.R")
 
 fish_function(catch)
 
-
 ```
+

@@ -5,7 +5,7 @@ fish_function <- function(catch) {
   rev = price*catch
   rev_loc = colSums(rev)
   fish_rev = rowSums(rev)
-  return(list(fish_frequency = fish_freq, revenue_location = rev_loc, fishery_revenue = fish_rev))
-  
-  plot(rev_loc)
+  plot_rev = barplot(rev_loc, xlab = "Location", ylab = "Total Revenue ($)")
+  return(list(fish_frequency = fish_freq, revenue_location = rev_loc, fishery_revenue = fish_rev, plot = plot_rev))
 }
+
