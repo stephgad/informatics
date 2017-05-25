@@ -1,0 +1,46 @@
+---
+title: "HW 4"
+author: "Steph Gad and Monique Schafer"
+date: '`r format (Sys.time(), "%Y-%m-%d")`'
+output: html_document
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Load Libraries 
+library(tidyverse)
+library(ggplot2)
+library(reshape2)
+
+```
+
+#Generate example data
+```{r}
+species = as.factor(c("mahimahi", "halibut", "salmon", "cod", "albacore"))
+location = as.factor(c("pacific", "west_pac", "atlantic", "gulf"))
+
+catch_tib <- tibble(
+  pacific = c(100, 321, 254, 190, 500),
+  west_pac = c(500, 110, 0, 100, 950),
+  atlantic = c(200, 600, 250, 900, 400),
+  gulf = c(334, 160, 50, 430, 1000)
+)
+
+#price per pound 
+price <- c(25, 22, 20, 23, 12)
+
+catch <- as.matrix(catch_tib)
+rownames(catch) = species
+colnames(catch) = location
+
+source("fish_function.R")
+
+fish_function(catch)
+
+
+```
